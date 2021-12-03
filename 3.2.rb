@@ -3,8 +3,8 @@ lines = File.open('3.input').map(&:strip)
 
 length = lines.first.length
 
-oxygen = Proc.new{|tied, common, uncommon| tied ? 1 : common }
-co2 = Proc.new{|tied, common, uncommon| tied ? 0 : uncommon }
+oxygen = Proc.new{|tied, common| tied ? 1 : common }
+co2 = Proc.new{|tied, common| tied ? 0 : 1 - common }
 
 
 ratings = [oxygen, co2].map do |handler|
@@ -23,13 +23,7 @@ ratings = [oxygen, co2].map do |handler|
    tied = candidates.length % 2 == 0 && candidates[candidates.length / 2 - 1][i] != candidates[candidates.length / 2 ][i] 
    common_bit = candidates[ candidates.length / 2][i].to_i
 
-   uncommon_bit = if candidates.first[i] == candidates.last[i]
-     common_bit
-   else
-     1 - common_bit
-   end
-
-   next_bit = handler.call(tied, common_bit, uncommon_bit)
+   next_bit = handler.call(tied, common_bit)
 
    accumulator += next_bit.to_s
   end
